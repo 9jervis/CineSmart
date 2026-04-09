@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\projects\CineSmart\build\CMakeFiles\0dbbd2305ba52cb5f3432df1ec956c18\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{F509EE0E-21E4-38AA-BD77-36E139987931}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

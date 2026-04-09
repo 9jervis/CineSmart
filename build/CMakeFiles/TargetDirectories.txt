@@ -1,0 +1,10 @@
+C:/projects/CineSmart/build/CMakeFiles/INSTALL.dir
+C:/projects/CineSmart/build/CMakeFiles/ALL_BUILD.dir
+C:/projects/CineSmart/build/CMakeFiles/ZERO_CHECK.dir
+C:/projects/CineSmart/build/flutter/CMakeFiles/flutter_wrapper_plugin.dir
+C:/projects/CineSmart/build/flutter/CMakeFiles/flutter_wrapper_app.dir
+C:/projects/CineSmart/build/flutter/CMakeFiles/flutter_assemble.dir
+C:/projects/CineSmart/build/flutter/CMakeFiles/INSTALL.dir
+C:/projects/CineSmart/build/runner/CMakeFiles/cinesmart_app.dir
+C:/projects/CineSmart/build/runner/CMakeFiles/INSTALL.dir
+C:/projects/CineSmart/build/runner/CMakeFiles/ALL_BUILD.dir

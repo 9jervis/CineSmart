@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CineSmart: Run Backend (FastAPI)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoExit",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\run_backend.ps1"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "CineSmart: Run App (Flutter)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoExit",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\run_app.ps1"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "CineSmart: Run Both (Backend + App)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoExit",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\dev.ps1"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
+
