@@ -1,9 +1,18 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../models/chat_response_model.dart';
+import '../models/movie_model.dart';
+import '../models/booking_model.dart';
+
 class ApiService {
-  // ✅ Correct for Android emulator
-static const String baseUrl = 'http://10.0.2.2:8000';
+  // ✅ Use PC's LAN IP for real device (both phone & PC must be on same Wi-Fi)
+  // For Android emulator use: http://10.0.2.2:8000
+  static const String baseUrl = 'http://10.202.158.44:8000';
+
+  // Logged-in user (set after login)
+  static String? currentUserName;
+  static int? currentUserId;
 
   // 🔐 LOGIN API
   static Future<Map<String, dynamic>> login(
@@ -23,6 +32,10 @@ static const String baseUrl = 'http://10.0.2.2:8000';
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        currentUserName = (data["name"] ?? "").toString().trim().isEmpty
+            ? null
+            : data["name"].toString();
+        currentUserId = data["user_id"] is int ? data["user_id"] as int : null;
         return data;
       } else {
         return {
@@ -158,5 +171,71 @@ static const String baseUrl = 'http://10.0.2.2:8000';
     } else {
       throw Exception("Failed to load booked seats");
     }
+  }
+
+  // 📋 GET USER BOOKINGS FOR PROFILE
+  static Future<List<Booking>> getUserBookings(int userId) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/booking/user/$userId"),
+      ).timeout(const Duration(seconds: 5));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((json) => Booking.fromJson(json as Map<String, dynamic>)).toList();
+      } else {
+        throw Exception("Failed to load bookings");
+      }
+    } catch (e) {
+      throw Exception("Error fetching bookings: $e");
+    }
+  }
+
+  // ❌ CANCEL BOOKING
+  static Future<Map<String, dynamic>> cancelBooking(int bookingId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse("$baseUrl/booking/$bookingId"),
+      ).timeout(const Duration(seconds: 5));
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return data;
+      } else {
+        return {"message": data["detail"] ?? "Cancel failed"};
+      }
+    } catch (e) {
+      return {"message": "Network error: $e"};
+    }
+  }
+
+  static Future<Movie> getMovie(int movieId) async {
+    final response = await http.get(Uri.parse("$baseUrl/movies/$movieId"));
+
+    if (response.statusCode == 200) {
+      return Movie.fromJson(jsonDecode(response.body));
+    }
+    throw Exception("Failed to load movie");
+  }
+
+  // 💬 CHATBOT
+  static Future<ChatResponseModel> chat({
+    required String message,
+    String? sessionId,
+  }) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/chat"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "message": message,
+        if (sessionId != null && sessionId.isNotEmpty) "session_id": sessionId,
+        if (currentUserId != null) "user_id": currentUserId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return ChatResponseModel.fromJson(jsonDecode(response.body));
+    }
+    throw Exception("Chat request failed");
   }
 }

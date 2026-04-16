@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../services/api_service.dart';
 import '../../models/movie_model.dart';
 import '../movie/movie_details_screen.dart';
+import '../chat/chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -108,15 +109,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    actions: const [
-                      Padding(
-                        padding: EdgeInsets.only(right: 8),
-                        child: Icon(Icons.search, color: Colors.black87),
+                    actions: [
+                      IconButton(
+                        tooltip: 'Chat',
+                        icon: const Icon(Icons.chat_bubble_outline,
+                            color: Colors.black87),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ChatScreen(),
+                            ),
+                          );
+                        },
                       ),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.only(right: 12),
-                        child:
-                            Icon(Icons.notifications_none, color: Colors.black87),
+                        child: Icon(Icons.notifications_none,
+                            color: Colors.black87),
                       ),
                     ],
                   ),
@@ -282,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         scrollDirection: Axis.horizontal,
                         itemCount: filteredMovies.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        separatorBuilder: (_, _) => const SizedBox(width: 12),
                         itemBuilder: (context, index) {
                           final movie = filteredMovies[index];
                           return _PosterCard(
@@ -385,10 +395,11 @@ class _PosterCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AspectRatio(
-              aspectRatio: 2 / 3,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: SizedBox(
+                height: 168,
+                width: double.infinity,
                 child: Image.network(
                   movie.imageUrl,
                   fit: BoxFit.cover,

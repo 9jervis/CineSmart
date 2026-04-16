@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../services/api_service.dart';
+import '../profile/bookings_screen.dart';
 
 class SeatSelectionScreen extends StatefulWidget {
   final int itemId;
   final String itemTitle;
   final String itemSubtitle;
   final String initialShowTime;
+  final int? requestedSeats;
 
   const SeatSelectionScreen({
     super.key,
@@ -13,6 +15,7 @@ class SeatSelectionScreen extends StatefulWidget {
     required this.itemTitle,
     required this.itemSubtitle,
     required this.initialShowTime,
+    this.requestedSeats,
   });
 
   @override
@@ -41,10 +44,19 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
   void initState() {
     super.initState();
     _selectedShowTime = widget.initialShowTime;
+    
+    // If seats were provided by chatbot, use them
+    if (widget.requestedSeats != null && widget.requestedSeats! > 0) {
+      _seatCount = widget.requestedSeats;
+      _seatCountPromptShown = true;
+    }
+    
     _loadSoldSeats();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _promptSeatCountIfNeeded();
+      if (!_seatCountPromptShown) {
+        _promptSeatCountIfNeeded();
+      }
     });
   }
 
@@ -233,7 +245,7 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,
               itemCount: _showTimes.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, _) => const SizedBox(width: 10),
               itemBuilder: (context, i) {
                 final t = _showTimes[i];
                 final selected = t == _selectedShowTime;
@@ -332,8 +344,19 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
                 ? null
                 : () async {
                     setState(() => _booking = true);
+                    
+                    // Use current user's ID from ApiService
+                    final userId = ApiService.currentUserId;
+                    if (userId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("User not logged in")),
+                      );
+                      setState(() => _booking = false);
+                      return;
+                    }
+                    
                     final response = await ApiService.bookTickets(
-                      userId: 1,
+                      userId: userId,
                       movieId: widget.itemId,
                       showTime: _selectedShowTime,
                       seats: _selectedSeats.toList(),
@@ -343,8 +366,16 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
 
                     if (response["id"] != null) {
                       await _loadSoldSeats();
+                      if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Booking Successful")),
+                        const SnackBar(content: Text("Booking Successful! 🎉")),
+                      );
+                      // Navigate to bookings screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const BookingsScreen(),
+                        ),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(

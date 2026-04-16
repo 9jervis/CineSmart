@@ -8,6 +8,7 @@ Run this script to add movies to the database.
 from sqlalchemy.orm import sessionmaker
 from app.core.database import engine
 from app.models.movie import Movie
+from app.utils.omdb import fetch_poster_url_by_title
 
 # Create session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -158,6 +159,11 @@ def seed_movies():
     """Add movies to database if they don't already exist"""
     try:
         for movie_data in movies_data:
+            # Try to replace placeholder image with real poster (if OMDB_API_KEY is set)
+            poster = fetch_poster_url_by_title(movie_data["title"])
+            if poster:
+                movie_data["image_url"] = poster
+
             # Check if movie already exists
             existing_movie = db.query(Movie).filter(Movie.title == movie_data["title"]).first()
             if not existing_movie:

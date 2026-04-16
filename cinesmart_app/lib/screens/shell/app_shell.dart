@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../home/home_screen.dart';
 import '../movies/movies_screen.dart';
 import '../events/events_screen.dart';
+import '../profile/profile_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -20,7 +21,7 @@ class _AppShellState extends State<AppShell> {
       const HomeScreen(),
       const MoviesScreen(),
       const EventsScreen(),
-      const _PlaceholderScreen(title: 'Profile'),
+      const ProfileScreen(),
     ];
 
     return Scaffold(
@@ -40,23 +41,6 @@ class _AppShellState extends State<AppShell> {
           NavigationDestination(
               icon: Icon(Icons.person_outline), label: 'Profile'),
         ],
-      ),
-    );
-  }
-}
-
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-  const _PlaceholderScreen({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Center(
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
       ),
     );
   }

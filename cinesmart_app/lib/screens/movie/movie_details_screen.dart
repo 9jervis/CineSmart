@@ -80,6 +80,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
+        if (!mounted) return;
         setState(() {
           _locationLabel = 'Location service is disabled';
           _isLocating = false;
@@ -94,6 +95,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
+        if (!mounted) return;
         setState(() {
           _locationLabel = 'Allow location permission in settings';
           _isLocating = false;
@@ -102,12 +104,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       }
 
       final position = await Geolocator.getCurrentPosition();
+      if (!mounted) return;
       setState(() {
         _position = position;
         _locationLabel = 'Nearby theaters';
         _isLocating = false;
       });
     } catch (_) {
+      if (!mounted) return;
       setState(() {
         _locationLabel = 'Unable to get location';
         _isLocating = false;
@@ -256,7 +260,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: _dates.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 10),
+                      separatorBuilder: (_, _) => const SizedBox(width: 10),
                       itemBuilder: (context, index) {
                         final date = _dates[index];
                         final isSelected = index == _selectedDateIndex;
