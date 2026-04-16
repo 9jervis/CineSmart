@@ -6,9 +6,11 @@ import '../models/movie_model.dart';
 import '../models/booking_model.dart';
 
 class ApiService {
-  // ✅ Use PC's LAN IP for real device (both phone & PC must be on same Wi-Fi)
-  // For Android emulator use: http://10.0.2.2:8000
-  static const String baseUrl = 'http://10.202.158.44:8000';
+  // Use --dart-define=API_BASE_URL=<url> for production/web builds.
+  static final String baseUrl = const String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://10.0.2.2:8000',
+  );
 
   // Logged-in user (set after login)
   static String? currentUserName;
